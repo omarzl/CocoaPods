@@ -115,10 +115,16 @@ module Pod
       #
       def download_source
         verify_source_is_secure(root_spec)
+        puts "OZL 0.0 can_cache: #{can_cache}"
+        puts "OZL 0.1 #{download_request.inspect}"
+        puts "OZL 0.2 #{root}"
         download_result = Downloader.download(download_request, root, :can_cache => can_cache?)
-
-        if (specific_source = download_result.checkout_options) && specific_source != root_spec.source
-          sandbox.store_checkout_source(root_spec.name, specific_source)
+        puts "OZL 100.0 #{download_result.checkout_options}"
+        puts "OZL 100.1 #{root_spec.source}"
+        if (specific_source = download_result.checkout_options)
+          if specific_source != root_spec.source
+            sandbox.store_checkout_source(root_spec.name, specific_source)
+          end
         end
       end
 

@@ -207,8 +207,11 @@ module Pod
       #         was found in the download cache.
       #
       def cached_pod(request)
+        puts "OZL 5.0 cached_pod #{request.inspect}"
         cached_spec = cached_spec(request)
+        puts "OZL 5.2 cached_spec #{cached_spec}"
         path = path_for_pod(request)
+        puts "OZL 5.3 path #{path}"
 
         return unless cached_spec && path.directory?
         spec = request.spec || cached_spec
@@ -223,6 +226,7 @@ module Pod
       #
       def cached_spec(request)
         path = path_for_spec(request)
+        puts "OZL 5.1 path #{path}"
         path.file? && Specification.from_file(path)
       rescue JSON::ParserError
         nil
@@ -236,16 +240,25 @@ module Pod
       #
       def uncached_pod(request)
         in_tmpdir do |target|
+          puts "OZL 6.1 #{target}"
           result, podspecs = download(request, target)
+          puts "OZL 6.2 #{result}"
+          puts "OZL 6.3 #{podspecs}"
           result.location = nil
 
           podspecs.each do |name, spec|
+            puts "OZL 6.4 #{name}"
+            puts "OZL 6.5 #{spec}"
             destination = path_for_pod(request, :name => name, :params => result.checkout_options)
+            puts "OZL 6.7 #{destination}"
             copy_and_clean(target, destination, spec)
+            puts "OZL 8.0"
             write_spec(spec, path_for_spec(request, :name => name, :params => result.checkout_options))
             if request.name == name
               result.location = destination
             end
+            puts "OZL 8.1 #{`ls #{result.location}`}"
+            puts "OZL 8.2 #{`find #{result.location} -type f | wc -l`}"
           end
 
           result
@@ -280,7 +293,13 @@ module Pod
       # @return [Void]
       #
       def copy_and_clean(source, destination, spec)
+        puts "OZL 7.7 #{source}"
+        puts "OZL 7.8 #{destination}"
+        puts "OZL 7.9 #{spec}"
         specs_by_platform = group_subspecs_by_platform(spec)
+        puts "OZL 7.10 #{specs_by_platform}"
+        puts "OZL 7.11 #{`ls #{destination}`}"
+        puts "OZL 7.11 #{`find #{destination} -type f | wc -l`}"
         destination.parent.mkpath
         Cache.write_lock(destination) do
           FileUtils.rm_rf(destination)

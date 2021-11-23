@@ -32,14 +32,22 @@ module Pod
       can_cache: true,
       cache_path: Config.instance.cache_root + 'Pods'
     )
+    puts "OZL 2.0 cache_path: #{cache_path}"
       can_cache &&= !Config.instance.skip_download_cache
 
       request = preprocess_request(request)
 
+      puts "OZL 4.0 #{request.inspect}"
+
       if can_cache
         raise ArgumentError, 'Must provide a `cache_path` when caching.' unless cache_path
         cache = Cache.new(cache_path)
+        puts "OZL 4.1 #{cache.inspect}"
         result = cache.download_pod(request)
+        puts "OZL 10.2 #{result}"
+        puts "OZL 10.3 #{result.location}"
+        puts "OZL 10.4 #{`ls #{result.location}`}"
+        puts "OZL 10.5 #{`find #{result.location} -type f | wc -l`}"
       else
         raise ArgumentError, 'Must provide a `target` when caching is disabled.' unless target
 
@@ -48,6 +56,8 @@ module Pod
         Installer::PodSourcePreparer.new(result.spec, result.location).prepare!
       end
 
+      puts "OZL 11.0 #{target}"
+      puts "OZL 11.1 #{result.location}"
       if target && result.location && target != result.location
         UI.message "Copying #{request.name} from `#{result.location}` to #{UI.path target}", '> ' do
           Cache.read_lock(result.location) do
