@@ -42,17 +42,21 @@ module Pod
       if can_cache
         raise ArgumentError, 'Must provide a `cache_path` when caching.' unless cache_path
         cache = Cache.new(cache_path)
-        puts "OZL 4.1 #{cache.inspect}"
+        puts "OZL 10.1 #{cache.inspect}"
         result = cache.download_pod(request)
         puts "OZL 10.2 #{result}"
         puts "OZL 10.3 #{result.location}"
         puts "OZL 10.4 #{`ls #{result.location}`}"
         puts "OZL 10.5 #{`find #{result.location} -type f | wc -l`}"
       else
+        puts "OZL 10.6"
         raise ArgumentError, 'Must provide a `target` when caching is disabled.' unless target
 
         require 'cocoapods/installer/pod_source_preparer'
+        puts "OZL 10.7 #{request}"
+        puts "OZL 10.8 #{target}"
         result, = download_request(request, target)
+        puts "OZL 10.9 #{result}"
         Installer::PodSourcePreparer.new(result.spec, result.location).prepare!
       end
 

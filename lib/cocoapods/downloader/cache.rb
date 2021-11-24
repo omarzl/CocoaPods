@@ -18,7 +18,9 @@ module Pod
       #         see {#root}
       #
       def initialize(root)
+        puts "OZL 4.1 #{root}"
         @root = Pathname(root)
+        puts "OZL 4.2 #{@root}"
         ensure_matching_version
       end
 
@@ -163,12 +165,19 @@ module Pod
       #
       def ensure_matching_version
         version_file = root + 'VERSION'
+        puts "OZL 4.3 #{version_file}"
         version = version_file.read.strip if version_file.file?
-
+        puts "OZL 4.4 #{version}"
+        puts "OZL 4.5 #{version != Pod::VERSION}"
+        puts "OZL 4.6 #{root.exist?}"
+        puts "OZL 4.7 #{`ls #{root}`}"
+        puts "OZL 4.8 #{`find #{root} -type f | wc -l`}"
         root.rmtree if version != Pod::VERSION && root.exist?
+        puts "OZL 4.9 #{`ls #{root}`}"
         root.mkpath
-
+        puts "OZL 4.10 #{`ls #{root}`}"
         version_file.open('w') { |f| f << Pod::VERSION }
+        puts "OZL 4.11 #{version_file.read.strip}"
       end
 
       # @param  [Request] request
