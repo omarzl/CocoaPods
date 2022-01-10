@@ -166,6 +166,7 @@ module Pod
       def ensure_matching_version
         version_file = root + 'VERSION'
         puts "OZL 4.3 #{version_file}"
+        puts "OZL 4.3.2 #{version_file.file?}"
         version = version_file.read.strip if version_file.file?
         puts "OZL 4.4 #{version}"
         puts "OZL 4.5 #{version != Pod::VERSION}"
